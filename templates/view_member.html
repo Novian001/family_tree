@@ -1,0 +1,175 @@
+<html>
+
+<head>
+    <title>View Members</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+
+<body class="bg-gray-200">
+    <div class="container mx-auto my-10">
+        <h1 class="text-2xl font-bold text-center my-4">View Members</h1>
+        <div class="flex justify-center">
+            <nav class="bg-white rounded-lg p-4">
+                <ul class="flex justify-between">
+                    <li class="mx-2">
+                        <a href="{{url_for('index')}}" class="text-blue-500 hover:text-blue-800">Home</a>
+                    </li>
+                    <li class="mx-2">
+                        <a href="{{url_for('view')}}" class="text-blue-500 hover:text-blue-800">View Members</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Modal add -->
+        <div class="fixed top-0 left-0 h-full w-full flex items-center justify-center hidden" id="addModal">
+            <div class="bg-gray-900 bg-opacity-75 h-fit w-1/2 rounded-lg p-8">
+                <div class="flex justify-between">
+                    <h2 class="text-2xl font-medium text-white">Tambah Keluarga</h2>
+                    <button class="close" onclick="toggleModal('addModal')" id="CloseBtn"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form class="mt-6" action="{{ url_for('create') }}" method="POST">
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Name</label>
+                        <input id="addName" name="addName"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Gender</label>
+                        <select id="addGender" name="addGender"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600">
+                            <option value="laki-laki">Laki-laki</option>
+                            <option value="perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Parent ID</label>
+                        <input id="addParent" name="addParent"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Grand ID</label>
+                        <input id="addGrand" name="addGrand"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Modal edit -->
+        <div class="fixed top-0 left-0 h-full w-full flex items-center justify-center hidden" id="editModal">
+            <div class="bg-gray-900 bg-opacity-75 h-fit w-1/2 rounded-lg p-8">
+                <div class="flex justify-between">
+                    <h2 class="text-2xl font-medium text-white">Edit Keluarga</h2>
+                    <button class="close" onclick="toggleModal('editModal')" id="CloseBtn"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form class="mt-6" action="{{ url_for('update_member', id=members.0) }}" method="POST">
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">ID</label>
+                        <input id="editId" name="editId"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Name</label>
+                        <input id="editName" name="editName"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Gender</label>
+                        <select id="editGender" name="editGender"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600">
+                            <option value="laki-laki">Laki-laki</option>
+                            <option value="perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Parent ID</label>
+                        <input id="editParent" name="editParent"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-white">Grand ID</label>
+                        <input id="editGrand" name="editGrand"
+                            class="w-full border border-gray-600 rounded-lg p-2 text-sm text-gray-600" type="text">
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">Save
+                            changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="mt-5">
+            <button class="bg-blue-600 rounded p-4 ml-96 text-white hover:bg-blue-500"
+                onclick="toggleModal('addModal')">tambah
+                data</button>
+            <div class="flex justify-center">
+                <table class="bg-white rounded-lg p-4 my-4 w-1/2">
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Gender</th>
+                        <th class="px-4 py-2">Parent ID</th>
+                        <th class="px-4 py-2">Grandparent ID</th>
+                        <th class="px-4 py-2">Aksi</th>
+                    </tr>
+                    {% for member in members %}
+                    <tr>
+                        <td class="px-4 py-2">{{ member.0 }}</td>
+                        <td class="px-4 py-2">{{ member.1 }}</td>
+                        <td class="px-4 py-2">{{ member.2 }}</td>
+                        <td class="px-4 py-2">{{ member.3 }}</td>
+                        <td class="px-4 py-2">{{ member.4 }}</td>
+                        <td class="px-4 py-2">
+                            <button class="text-blue-500 hover:text-blue-800" data-id="{{ member.0 }}"
+                                data-name="{{ member.1 }}" data-gender="{{ member.2 }}" data-parent="{{ member.3 }}"
+                                data-grand="{{ member.4 }}"
+                                onClick="toggleModal('editModal', '{{ member.id }}')">Edit</button>
+                            <a href="{{ url_for('delete', id=member.0) }}"
+                                class="text-red-500 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleModal(modalId, id) {
+            // fetch data from database
+            fetch('/get_member/' + id)
+                .then(response => response.json())
+                .then(data => {
+                    // fill the form with data
+                    document.getElementById("editId").value = data.id;
+                    document.getElementById("editName").value = data.name;
+                    document.getElementById("editAge").value = data.age;
+                    document.getElementById("editGender").value = data.age;
+                    document.getElementById("editParent").value = data.parent_id;
+                    document.getElementById("editGrand").value = data.parent_id;
+                });
+            //tampil and close modal
+            var modal = document.getElementById(modalId);
+            var closeBtn = document.getElementById('CloseBtn');
+            closeBtn.addEventListener('click', function () {
+                modal.classList.remove("block");
+                modal.classList.add("hidden");
+            });
+            if (modal.classList.contains("block")) {
+                modal.classList.remove("block");
+                modal.classList.add("hidden");
+            } else {
+                modal.classList.add("block");
+                modal.classList.remove("hidden");
+            }
+        }
+    </script>
+    <script src="../script/jquery.js"></script>
+</body>
+
+</html>

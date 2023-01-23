@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.2.4"
+  },
+  "scripts": {
+    "watch": "npx tailwindcss -i ./src/tailwind.css -o ./static/main.css --watch"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.2.1"
+  }
+}
